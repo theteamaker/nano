@@ -1,0 +1,15 @@
+{
+    "extends": "@tsconfig/node-lts-strictest",
+    "removeComments": true,
+    "compilerOptions": {
+        "rootDir": "./src/",
+        "outDir": "./dist/"
+    },
+    "include": [
+        "./**/*.ts"
+    ],
+    "exclude": [
+        "node_modules",
+        "dist"
+    ]
+}

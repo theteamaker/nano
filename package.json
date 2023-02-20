@@ -1,0 +1,36 @@
+{
+  "name": "nano",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./dist/index.js",
+  "scripts": {
+    "prefullstart": "ts-node ./dist/utils/deploy-commands.js",
+    "fullstart": "ts-node ./dist/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/theteamaker/nano.git"
+  },
+  "author": "Eva Twin",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/theteamaker/nano/issues"
+  },
+  "homepage": "https://github.com/theteamaker/nano#readme",
+  "dependencies": {
+    "discord.js": "^14.7.1",
+    "dotenv": "^16.0.3"
+  },
+  "devDependencies": {
+    "@tsconfig/node-lts-strictest": "^18.12.1",
+    "@types/node": "^18.14.0",
+    "@typescript-eslint/eslint-plugin": "^5.52.0",
+    "eslint": "^8.34.0",
+    "eslint-config-standard-with-typescript": "^34.0.0",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-n": "^15.6.1",
+    "eslint-plugin-promise": "^6.1.1",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.9.5"
+  }
+}
