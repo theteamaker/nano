@@ -38,22 +38,22 @@ async function roundup(interaction: discord.ChatInputCommandInteraction) {
     }
 
     async function fetch() {
-        let fetched_pins: Array<discord.Message> = [];
+        const fetched_pins: Array<discord.Message> = [];
         if (!channel || channel.type != api.ChannelType.GuildText) {
             return fetched_pins;
         }
-        
+
         await channel.messages.fetchPinned(false)
             .then(async (pins) => await pins.forEach(async (msg) => await msg.fetch(false)
-            .then(msg => fetched_pins.push(msg))))
-        return fetched_pins
+                .then(fetched_msg => fetched_pins.push(fetched_msg))));
+        return fetched_pins;
     }
 
-    let fetched_pins = await fetch()
+    const fetched_pins = await fetch();
     if (fetched_pins.length === 0) {
-        await interaction.editReply("Huh... I didn't get anything back. Are there really *no* pins?")
-        return
+        await interaction.editReply('Huh... I didn\'t get anything back. Are there really *no* pins?');
+        return;
     }
-    
+
     await interaction.editReply(`${fetched_pins[0]}`);
 }

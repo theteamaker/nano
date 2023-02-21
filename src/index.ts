@@ -5,10 +5,10 @@ const { Client, Collection, Events, GatewayIntentBits, Partials, BaseInteraction
 const { genCachePromises } = require('./utils/cache.js');
 
 let last_cached: string;
-export { last_cached }
+export { last_cached };
 
 async function main() {
-    let initialized: boolean = false;
+    let initialized = false;
     const TOKEN = process.env['TOKEN'];
     const client = new Client({
         intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMessageReactions],
@@ -62,26 +62,26 @@ async function main() {
 
     const guildsJSON = JSON.parse(
         JSON.stringify(require(__dirname + '/../config/guilds.json')));
-    
-    const guildPromises: Array<Promise<any>> = []
-    const individualPromises: Array<Promise<any>> = []
+
+    const guildPromises: Array<Promise<any>> = [];
+    const individualPromises: Array<Promise<any>> = [];
     for (const [key, value] of Object.entries(guildsJSON)) {
-        guildPromises.push(genCachePromises(client, key, value))
+        guildPromises.push(genCachePromises(client, key, value));
     }
 
     // cursed cache initialization
-    setInterval(async () => await cache(), 1000 * 60)
+    setInterval(async () => await cache(), 1000 * 60);
     async function cache() {
-    Promise.all(guildPromises)
-       .then(array => array.forEach(promises => promises.forEach((promise: any) => individualPromises.push(promise))))
-       .then(() => Promise.all(individualPromises).then(() => {
-        if (initialized === false) {
-            console.log("Initialization has finished.");
-            initialized = true;
-        }
-        last_cached = Date();
-            console.log(`Last cache has finalized as of ${last_cached}.`)
-       }))
+        Promise.all(guildPromises)
+            .then(array => array.forEach(promises => promises.forEach((promise: any) => individualPromises.push(promise))))
+            .then(() => Promise.all(individualPromises).then(() => {
+                if (initialized === false) {
+                    console.log('Initialization has finished.');
+                    initialized = true;
+                }
+                last_cached = Date();
+                console.log(`Last cache has finalized as of ${last_cached}.`);
+            }));
     }
 }
 
