@@ -10,7 +10,7 @@ async function genCachePromises(client: discord.Client, guild_id: string, channe
         return;
     }
 
-    const requests: Array<Promise<any>> = [];
+    const requests: Array<Promise<discord.Message>> = [];
 
     // Unnecessary (and potentially harmful?) to cache pins without populated ReactionManagers,
     // therefore cache flag of fetchPinned() is set to false.

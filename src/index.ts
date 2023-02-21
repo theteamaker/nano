@@ -1,7 +1,7 @@
 require('dotenv').config({ path: __dirname + '/../config/.env' });
 const path = require('node:path');
 const { commandFiles } = require('./utils/deploy-commands.js');
-const { Client, Collection, Events, GatewayIntentBits, Partials, BaseInteraction } = require('discord.js');
+const { Client, Collection, Events, GatewayIntentBits, Partials, BaseInteraction, Message } = require('discord.js');
 const { genCachePromises } = require('./utils/cache.js');
 
 let last_cached: string;
@@ -63,8 +63,8 @@ async function main() {
     const guildsJSON = JSON.parse(
         JSON.stringify(require(__dirname + '/../config/guilds.json')));
 
-    const guildPromises: Array<Promise<any>> = [];
-    const individualPromises: Array<Promise<any>> = [];
+    const guildPromises: Array<Array<Promise<typeof Message>>> = [];
+    const individualPromises: Array<Promise<typeof Message>> = [];
     for (const [key, value] of Object.entries(guildsJSON)) {
         guildPromises.push(genCachePromises(client, key, value));
     }
@@ -73,7 +73,7 @@ async function main() {
     setInterval(async () => await cache(), 1000 * 60);
     async function cache() {
         Promise.all(guildPromises)
-            .then(array => array.forEach(promises => promises.forEach((promise: any) => individualPromises.push(promise))))
+            .then(array => array.forEach(promises => promises.forEach((promise: Promise<typeof Message>) => individualPromises.push(promise))))
             .then(() => Promise.all(individualPromises).then(() => {
                 if (initialized === false) {
                     console.log('Initialization has finished.');
