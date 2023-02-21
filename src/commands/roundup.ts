@@ -1,4 +1,5 @@
 import * as discord from 'discord.js';
+import * as api from 'discord-api-types/v10';
 
 module.exports = {
     data: new discord.SlashCommandBuilder()
@@ -28,13 +29,31 @@ module.exports = {
 
 async function roundup(interaction: discord.ChatInputCommandInteraction) {
     await interaction.deferReply({ ephemeral: true });
-    if (!interaction.guild || !interaction.channel) {
+
+    const guild = interaction.guild;
+    const channel = interaction.channel;
+
+    if (!(guild && channel && channel.type === api.ChannelType.GuildText)) {
         return;
     }
 
+    async function fetch() {
+        let fetched_pins: Array<discord.Message> = [];
+        if (!channel || channel.type != api.ChannelType.GuildText) {
+            return fetched_pins;
+        }
+        
+        await channel.messages.fetchPinned(false)
+            .then(async (pins) => await pins.forEach(async (msg) => await msg.fetch(false)
+            .then(msg => fetched_pins.push(msg))))
+        return fetched_pins
+    }
 
-    // to be filled by OEM lol
-
-
-    await interaction.editReply('meow');
+    let fetched_pins = await fetch()
+    if (fetched_pins.length === 0) {
+        await interaction.editReply("Huh... I didn't get anything back. Are there really *no* pins?")
+        return
+    }
+    
+    await interaction.editReply(`${fetched_pins[0]}`);
 }

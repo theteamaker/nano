@@ -1,10 +1,14 @@
+require('dotenv').config({ path: __dirname + '/../config/.env' });
 const path = require('node:path');
 const { commandFiles } = require('./utils/deploy-commands.js');
 const { Client, Collection, Events, GatewayIntentBits, Partials, BaseInteraction } = require('discord.js');
+const { genCachePromises } = require('./utils/cache.js');
 
-require('dotenv').config({ path: __dirname + '/../config/.env' });
+let last_cached: string;
+export { last_cached }
 
-function main() {
+async function main() {
+    let initialized: boolean = false;
     const TOKEN = process.env['TOKEN'];
     const client = new Client({
         intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMessageReactions],
@@ -36,6 +40,11 @@ function main() {
             return;
         }
 
+        if (initialized === false) {
+            await interaction.reply({ content: 'The initialization process is still running. If this persists for an extended period of time, contact Eva.', ephemeral: true });
+            return;
+        }
+
         try {
             await command.execute(interaction);
         }
@@ -50,6 +59,30 @@ function main() {
     });
 
     client.login(TOKEN);
+
+    const guildsJSON = JSON.parse(
+        JSON.stringify(require(__dirname + '/../config/guilds.json')));
+    
+    const guildPromises: Array<Promise<any>> = []
+    const individualPromises: Array<Promise<any>> = []
+    for (const [key, value] of Object.entries(guildsJSON)) {
+        guildPromises.push(genCachePromises(client, key, value))
+    }
+
+    // cursed cache initialization
+    setInterval(async () => await cache(), 1000 * 60)
+    async function cache() {
+    Promise.all(guildPromises)
+       .then(array => array.forEach(promises => promises.forEach((promise: any) => individualPromises.push(promise))))
+       .then(() => Promise.all(individualPromises).then(() => {
+        if (initialized === false) {
+            console.log("Initialization has finished.");
+            initialized = true;
+        }
+        last_cached = Date();
+            console.log(`Last cache has finalized as of ${last_cached}.`)
+       }))
+    }
 }
 
 if (require.main === module) {
