@@ -54,6 +54,10 @@ async function main() {
         }
     });
 
+    // client.on(Events.InteractionCreate, async( interaction: typeof BaseInteraction) => {
+    //     if (!interaction.isButton()) return;
+    // })
+
     client.once(Events.ClientReady, (c: typeof Client) => {
         console.log(`Ready! Logged in as ${c.user.tag}`);
     });
@@ -70,7 +74,7 @@ async function main() {
     }
 
     // cursed cache initialization
-    setInterval(async () => await cache(), 1000 * 60);
+    setInterval(async () => await cache(), 1000 * 30);
     async function cache() {
         Promise.all(guildPromises)
             .then(array => array.forEach(promises => promises.forEach((promise: Promise<typeof Message>) => individualPromises.push(promise))))
