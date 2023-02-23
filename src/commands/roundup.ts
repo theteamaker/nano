@@ -200,21 +200,11 @@ async function roundup(interaction: discord.ChatInputCommandInteraction) {
         .setLabel('Next')
         .setStyle(discord.ButtonStyle.Primary);
 
-    const unfoldButton = new discord.ButtonBuilder()
-        .setCustomId('unfold')
-        .setEmoji('⬇️')
-        .setStyle(discord.ButtonStyle.Primary);
-
-    const foldButton = new discord.ButtonBuilder()
-        .setCustomId('fold')
-        .setEmoji('⬆️')
-        .setStyle(discord.ButtonStyle.Primary);
-
     // Initialize things.
     previousButton.setDisabled(true);
 
     const actionRowFirst = new discord.ActionRowBuilder<discord.ButtonBuilder>()
-        .addComponents([previousButton, nextButton, unfoldButton]);
+        .addComponents([previousButton, nextButton]);
 
     const mrwor = await interaction.editReply({ embeds: [defaultEmbed], components: [actionRowFirst] });
 
@@ -222,23 +212,6 @@ async function roundup(interaction: discord.ChatInputCommandInteraction) {
 
     collector.on('collect', async (buttonInteraction) => {
         await buttonInteraction.deferUpdate();
-        switch (buttonInteraction.customId) {
-        case 'unfold':
-            unfold(buttonInteraction);
-            return;
-        case 'fold':
-            await buttonInteraction.editReply({ embeds: [defaultEmbed], components: [actionRowFirst] });
-            return;
-        }
-
-        async function unfold(toUnfoldInteraction: discord.ButtonInteraction) {
-            previousButton.setDisabled(true);
-            nextButton.setDisabled(true);
-            const unfoldedActionRow = new discord.ActionRowBuilder<discord.ButtonBuilder>()
-                .addComponents([previousButton, nextButton, foldButton]);
-            await toUnfoldInteraction.editReply({ embeds: embeds, components: [unfoldedActionRow] });
-        }
-
         if (buttonInteraction.message.embeds[0] === undefined) return;
 
         const footersplit = buttonInteraction.message.embeds[0].footer?.text.split('/')[0];
