@@ -233,7 +233,7 @@ async function roundup(interaction: discord.ChatInputCommandInteraction) {
 
         async function unfold(toUnfoldInteraction: discord.ButtonInteraction) {
             previousButton.setDisabled(true);
-            nextButton.setDisabled(false);
+            nextButton.setDisabled(true);
             const unfoldedActionRow = new discord.ActionRowBuilder<discord.ButtonBuilder>()
                 .addComponents([previousButton, nextButton, foldButton]);
             await toUnfoldInteraction.editReply({ embeds: embeds, components: [unfoldedActionRow] });
