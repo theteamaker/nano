@@ -3,3 +3,4 @@ config/.env
 config/guilds.json
 package-lock.json
 dist/
+.vscode/
