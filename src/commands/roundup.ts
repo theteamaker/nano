@@ -227,6 +227,8 @@ async function roundup(interaction: discord.ChatInputCommandInteraction) {
             unfold(buttonInteraction);
             return;
         case 'fold':
+            previousButton.setDisabled(true);
+            nextButton.setDisabled(false);
             await buttonInteraction.editReply({ embeds: [defaultEmbed], components: [actionRowFirst] });
             return;
         }
