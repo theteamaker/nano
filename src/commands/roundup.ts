@@ -221,6 +221,7 @@ async function roundup(interaction: discord.ChatInputCommandInteraction) {
     const collector = mrwor.createMessageComponentCollector({ componentType: api.ComponentType.Button });
 
     collector.on('collect', async (buttonInteraction) => {
+        await buttonInteraction.deferUpdate();
         switch (buttonInteraction.customId) {
         case 'unfold':
             unfold(buttonInteraction);
@@ -238,7 +239,6 @@ async function roundup(interaction: discord.ChatInputCommandInteraction) {
             await toUnfoldInteraction.editReply({ embeds: embeds, components: [unfoldedActionRow] });
         }
 
-        await buttonInteraction.deferUpdate();
         if (buttonInteraction.message.embeds[0] === undefined) return;
 
         const footersplit = buttonInteraction.message.embeds[0].footer?.text.split('/')[0];
